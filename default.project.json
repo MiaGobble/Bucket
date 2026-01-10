@@ -1,0 +1,13 @@
+{
+  "name": "Heap",
+
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "Heap": {
+        "$path": "src/src"
+      }
+    }
+  }
+}
