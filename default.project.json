@@ -6,7 +6,7 @@
 
     "ReplicatedStorage": {
       "Heap": {
-        "$path": "src/src"
+        "$path": "src"
       }
     }
   }

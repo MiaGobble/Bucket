@@ -1,0 +1,8 @@
+[package]
+name = "miagobble/heap"
+version = "1.0.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Typer = "miagobble/typer@0.1.0"
