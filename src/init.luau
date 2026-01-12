@@ -25,8 +25,8 @@ local CLEANUP_METHOD_NAMES = {
 }
 
 -- Imports
-local Packages = script.Packages
-local Typer = require(Packages.Typer)
+local Packages = script:FindFirstChild("Packages")
+local Typer = if Packages then require(Packages.Typer) else require(script.Parent.Typer)
 
 local function GetMatchingCleanupCallback(Object : any, CleanupMethodName : string?) : () -> nil
     local ThisType = typeof(Object)
