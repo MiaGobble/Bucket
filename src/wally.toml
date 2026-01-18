@@ -1,6 +1,6 @@
 [package]
-name = "miagobble/heap"
-version = "1.0.3"
+name = "miagobble/bucket"
+version = "1.0.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 

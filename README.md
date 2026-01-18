@@ -1,4 +1,4 @@
-# Heap
-A cleanup module similar to Trove, Janitor, or Maid.
+# Bucket
+A simple library to track and clean up instances, connections, promises, and more.
 
-Download Heap from Wally: `heap = "miagobble/heap@1.0.3"`
+Download Bucket from Wally: https://wally.run/package/miagobble/bucket

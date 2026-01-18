@@ -1,11 +1,11 @@
 {
-  "name": "Heap",
+  "name": "Bucket",
 
   "tree": {
     "$className": "DataModel",
 
     "ReplicatedStorage": {
-      "Heap": {
+      "Bucket": {
         "$path": "src"
       }
     }

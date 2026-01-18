@@ -1,14 +1,14 @@
 --[=[
     Used for cleanup of various data types and instances.
 
-    @class Heap
+    @class Bucket
 --]=]
 
-local Heap = {}
-Heap.__index = Heap
+local Bucket = {}
+Bucket.__index = Bucket
 
 -- Types
-export type Heap = typeof(setmetatable({}, Heap))
+export type Bucket = typeof(setmetatable({}, Bucket))
 
 -- Constants
 local TABLE_CLEANUP_METHODS = {
@@ -73,21 +73,21 @@ local function AssertPromiseValidity(Object : any)
 end
 
 --[=[
-    Creates a new heap instance.
+    Creates a new bucket instance.
 
     ```lua
-    local HeapInstance = Heap.new()
+    local BucketInstance = Bucket.new()
 
-    HeapInstance:Add(...)
-    HeapInstance:Remove(...)
-    HeapInstance:Destroy()
+    BucketInstance:Add(...)
+    BucketInstance:Remove(...)
+    BucketInstance:Destroy()
     ```
 
-    @return Heap
+    @return Bucket
 --]=]
 
-function Heap.new() : Heap
-    local self = setmetatable({}, Heap)
+function Bucket.new() : Bucket
+    local self = setmetatable({}, Bucket)
 
     self.CleanupQueue = {}
     self.IsCleaning = false
@@ -96,18 +96,18 @@ function Heap.new() : Heap
 end
 
 --[=[
-    Adds userdata or an instance to the heap. Supported types include: Instance, RBXScriptConnection, function, thread, or table.
+    Adds userdata or an instance to the bucket. Supported types include: Instance, RBXScriptConnection, function, thread, or table.
 
     ```lua
-    local HeapInstance = Heap.new()
+    local BucketInstance = Bucket.new()
 
-    HeapInstance:Add(workspace.Baseplate)
+    BucketInstance:Add(workspace.Baseplate)
 
-    HeapInstance:Add(RunService.RenderStepped:Connect(function()
+    BucketInstance:Add(RunService.RenderStepped:Connect(function()
         -- ...
     end))
 
-    HeapInstance:Add(function()
+    BucketInstance:Add(function()
         -- ...
     end)
     ```
@@ -117,32 +117,32 @@ end
     @return any -- The object you inputted
 --]=]
 
-function Heap:Add(Object : any, CleanupMethodName : string?)
+function Bucket:Add(Object : any, CleanupMethodName : string?)
     if self.IsCleaning then
-        error("Cannot add an object to heap during cleanup")
+        error("Cannot add an object to bucket during cleanup")
     end
 
     self.CleanupQueue[Object] = GetMatchingCleanupCallback(Object, CleanupMethodName)
 end
 
 --[=[
-    Adds a promise to the heap. Will return the promise, meaning it can be chained.
+    Adds a promise to the bucket. Will return the promise, meaning it can be chained.
 
     ```lua
     -- local MyPromise = ...
 
-    local HeapInstance = Heap.new()
+    local BucketInstance = Bucket.new()
 
-    HeapInstance:AddPromise(MyPromise)
+    BucketInstance:AddPromise(MyPromise)
     ```
 
     @param Promise Promise -- The promise to be cleaned up
     @return Promise -- The same promise that was inputted
 --]=]
 
-function Heap:AddPromise(Object : any)
+function Bucket:AddPromise(Object : any)
     if self.IsCleaning then
-        error("Cannot add a promise to heap during cleanup")
+        error("Cannot add a promise to bucket during cleanup")
     end
 
     AssertPromiseValidity(Object)
@@ -163,18 +163,18 @@ function Heap:AddPromise(Object : any)
 end
 
 --[=[
-    Tells the Heap to destroy itself when the inputted instance is destroyed or parented to nil.
+    Tells the Bucket to destroy itself when the inputted instance is destroyed or parented to nil.
 
     ```lua
-    local HeapInstance = Heap.new()
+    local BucketInstance = Bucket.new()
 
-    HeapInstance:AttachToInstance(PartInstance)
+    BucketInstance:AttachToInstance(PartInstance)
     ```
 
     @param Instance Instance -- The instance to track
 --]=]
 
-function Heap:AttachToInstance(Object : Instance)
+function Bucket:AttachToInstance(Object : Instance)
     if self.IsCleaning then
         error("Can't attach to instance when cleaning")
     elseif not Object:IsDescendantOf(game) then
@@ -191,43 +191,43 @@ function Heap:AttachToInstance(Object : Instance)
 end
 
 --[=[
-    Creates another Heap and adds it to this (the parent) one.
+    Creates another Bucket and adds it to this (the parent) one.
 
     ```lua
-    local HeapInstance = Heap.new()
+    local BucketInstance = Bucket.new()
 
-    local SubHeapInstance = HeapInstance:Extend()
+    local SubBucketInstance = BucketInstance:Extend()
     ```
 
-    @return Heap -- The sub-Heap
+    @return Bucket -- The sub-Bucket
 --]=]
 
-function Heap:Extend()
+function Bucket:Extend()
     if self.IsCleaning then
-        error("Can't extend heap when cleaning")
+        error("Can't extend bucket when cleaning")
     end
 
-    local SubHeap = Heap.new()
+    local SubBucket = Bucket.new()
 
-    Heap:Add(SubHeap)
+    Bucket:Add(SubBucket)
 
-    return SubHeap
+    return SubBucket
 end
 
 --[=[
-    Removes an object from Heap's cleanup.
+    Removes an object from Bucket's cleanup.
 
     ```lua
-    local HeapInstance = Heap.new()
+    local BucketInstance = Bucket.new()
 
-    HeapInstance:Add(Value)
-    HeapInstance:Remove(Value) -- No longer cleaned up
+    BucketInstance:Add(Value)
+    BucketInstance:Remove(Value) -- No longer cleaned up
     ```
 
     @param Object any -- The object to be removed from cleanup
 --]=]
 
-function Heap:Remove(Object : any)
+function Bucket:Remove(Object : any)
     if self.IsCleaning then
         error("Can't remove object when cleaning")
     end
@@ -236,12 +236,12 @@ function Heap:Remove(Object : any)
 end
 
 --[=[
-    Returns a function that, when called, destroys the Heap.
+    Returns a function that, when called, destroys the Bucket.
 
     ```lua
-    local HeapInstance = Heap.new()
+    local BucketInstance = Bucket.new()
 
-    local Destroy = HeapInstance:GetWrappedDestroy()
+    local Destroy = BucketInstance:GetWrappedDestroy()
 
     Destroy()
     ```
@@ -249,25 +249,25 @@ end
     @return () -> nil
 --]=]
 
-function Heap:GetWrappedDestroy()
+function Bucket:GetWrappedDestroy()
     return function()
         self:Destroy()
     end
 end
 
 --[=[
-    Destroys the Heap, cleaning up all objects and promises inside of it.
+    Destroys the Bucket, cleaning up all objects and promises inside of it.
 
     ```lua
-    local HeapInstance = Heap.new()
+    local BucketInstance = Bucket.new()
 
     -- Add stuff...
 
-    HeapInstance:Destroy()
+    BucketInstance:Destroy()
     ```
 --]=]
 
-function Heap:Destroy()
+function Bucket:Destroy()
     self.IsCleaning = true
 
     for Object : any, CleanupCallback : (any) -> nil in self.CleanupQueue do
@@ -278,4 +278,4 @@ function Heap:Destroy()
     table.clear(self)
 end
 
-return Heap
+return Bucket
