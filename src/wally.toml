@@ -1,8 +1,8 @@
 [package]
 name = "miagobble/bucket"
-version = "1.0.0"
+version = "1.0.1"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
 [dependencies]
-Typer = "miagobble/typer@0.1.0"
+Typer = "miagobble/typer@0.1.1"
