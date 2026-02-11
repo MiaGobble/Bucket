@@ -209,7 +209,7 @@ function Bucket:Extend()
 
 	local SubBucket = Bucket.new()
 
-	Bucket:Add(SubBucket)
+	self:Add(SubBucket)
 
 	return SubBucket
 end
@@ -268,6 +268,10 @@ end
 ]=]
 
 function Bucket:Destroy()
+	if not self.CleanupQueue then
+		return
+	end
+	
 	self.IsCleaning = true
 
 	for Object : any, CleanupCallback : (any) -> nil in self.CleanupQueue do
