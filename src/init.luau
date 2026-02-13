@@ -268,7 +268,7 @@ end
 ]=]
 
 function Bucket:Destroy()
-	if not self.CleanupQueue then
+	if not self.CleanupQueue or self.IsCleaning then
 		return
 	end
 	
